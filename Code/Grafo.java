@@ -34,6 +34,56 @@ public class Grafo {
         // TODO: Criar método para calcular o raio
     }
 
+    /**
+     * Método para calcular a excentricidade de um vértice específico
+     * 
+     * @param vertice Número do vértice para se encontrar a excentricidade
+     * @return Retorna um int que representa a excentricidade do vértice
+     */
+    public int calcularExcentricidade(int vertice) {
+        // TODO: Criar método para calcular excentricidade de um vértice específico
+    }
+
+    /**
+     * Busca em Largura
+     * 
+     * @param verticeInicio Vértice onde irá iniciar a busca em largura
+     * @param verticeFinal  Vértice objetivo onde irá terminar a busca
+     * @return Caminho da busca em Largura
+     */
+    public int[][] buscaEmLargura(int verticeInicio, int verticeFinal) {
+        // TODO: Criar método de busca em largura
+    }
+
+    /**
+     * Busca em Profundidade
+     * 
+     * @param verticeInicio Vértice onde irá iniciar a busca em Profundidade
+     * @param verticeFinal  Vértice objetivo onde irá terminar a busca
+     * @return Caminho da busca em Profundidade
+     */
+    public int[][] buscaEmProfundidade(int verticeInicio, int verticeFinal) {
+        // TODO: Criar método de busca em profundidade
+    }
+
+    /**
+     * Método que irá solucionar o problema dos k-centros sem heurística
+     * 
+     * @return Vetor com a posição ideal para os centros
+     */
+    public int[] solucao() {
+        // TODO: Criar método sem heurística
+    }
+
+    /**
+     * Método que irá solucionar o problema dos k-centros utilizando uma heurística
+     * 
+     * @return Vetor com a posição ideal para os centros
+     */
+    public int[] solucaoHeuristica() {
+        // TODO: Criar método com heurística
+    }
+
     // Getters
     public int[][] getMat() {
         return this.mat;
