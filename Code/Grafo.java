@@ -50,11 +50,31 @@ public class Grafo {
      * Busca em Largura
      * 
      * @param verticeInicio Vértice onde irá iniciar a busca em largura
-     * @param verticeFinal  Vértice objetivo onde irá terminar a busca
      * @return Caminho da busca em Largura
      */
-    public int[][] buscaEmLargura(int verticeInicio, int verticeFinal) {
-        // TODO: Criar método de busca em largura
+    public Map<Integer, Integer> buscaEmLargura(int verticeInicio) {
+        // Fila de vertices         
+        Queue<Integer> Q = new LinkedList<Integer>();
+        Q.add(verticeInicio);
+        // Dicionario de pais
+        Map<Integer, Integer> parents = new HashMap<Integer, Integer>();
+        // Elementos visitados
+        Set<Integer> visited = new HashSet<Integer>();
+
+        //BFS
+        parents.put(verticeInicio, -1);
+        while(!Q.isEmpty()){
+            int v = Q.remove();
+            if (!visited.contains(v)) {
+                visited.add(v);
+                for (int vertice : obtainSuccessors(v)) {
+                    Q.add(vertice);
+                    parents.put(vertice, v);
+                }
+            }
+        }
+       
+        return parents;
     }
 
     /**
