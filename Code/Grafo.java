@@ -1,3 +1,5 @@
+import java.util.*;
+
 /**
  * Classe que representa uma estrutura de Grafo
  */
@@ -59,11 +61,47 @@ public class Grafo {
      * Busca em Profundidade
      * 
      * @param verticeInicio Vértice onde irá iniciar a busca em Profundidade
-     * @param verticeFinal  Vértice objetivo onde irá terminar a busca
      * @return Caminho da busca em Profundidade
      */
-    public int[][] buscaEmProfundidade(int verticeInicio, int verticeFinal) {
-        // TODO: Criar método de busca em profundidade
+    public Map<Integer, Integer> buscaEmProfundidade(int verticeInicio) {
+        // Pilha de vertices         
+        Stack<Integer> S = new Stack<Integer>();
+        S.push(verticeInicio);
+        // Dicionario de pais
+        Map<Integer, Integer> parents = new HashMap<Integer, Integer>();
+        // Elementos visitados
+        Set<Integer> visited = new HashSet<Integer>();
+
+        //DFS
+        parents.put(verticeInicio, -1);
+        while(!S.empty()){
+            int v = S.pop();
+            if (!visited.contains(v)) {
+                visited.add(v);
+                for (int vertice : obtainSuccessors(v)) {
+                    S.push(vertice);
+                    parents.put(vertice, v);
+                }
+            }
+        }
+       
+        return parents;
+    }
+
+    /**
+     * Retorna os sucessores do vértice
+     * 
+     * @param vertice 
+     * @return Sucessores
+     */
+    public Set<Integer> obtainSuccessors(int vertice){
+        Set<Integer> sucessores = new HashSet<Integer>();
+        for(int i = 0; i < mat.length; i++){
+            if(mat[vertice][i] > 0){
+                sucessores.add(i);
+            }
+        }
+        return sucessores;
     }
 
     /**
