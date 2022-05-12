@@ -53,7 +53,7 @@ public class Grafo {
      * @return Caminho da busca em Largura
      */
     public Map<Integer, Integer> buscaEmLargura(int verticeInicio) {
-        // Fila de vertices         
+        // Fila de vertices
         Queue<Integer> Q = new LinkedList<Integer>();
         Q.add(verticeInicio);
         // Dicionario de pais
@@ -61,9 +61,9 @@ public class Grafo {
         // Elementos visitados
         Set<Integer> visited = new HashSet<Integer>();
 
-        //BFS
+        // BFS
         parents.put(verticeInicio, -1);
-        while(!Q.isEmpty()){
+        while (!Q.isEmpty()) {
             int v = Q.remove();
             if (!visited.contains(v)) {
                 visited.add(v);
@@ -73,7 +73,7 @@ public class Grafo {
                 }
             }
         }
-       
+
         return parents;
     }
 
@@ -84,7 +84,7 @@ public class Grafo {
      * @return Caminho da busca em Profundidade
      */
     public Map<Integer, Integer> buscaEmProfundidade(int verticeInicio) {
-        // Pilha de vertices         
+        // Pilha de vertices
         Stack<Integer> S = new Stack<Integer>();
         S.push(verticeInicio);
         // Dicionario de pais
@@ -92,9 +92,9 @@ public class Grafo {
         // Elementos visitados
         Set<Integer> visited = new HashSet<Integer>();
 
-        //DFS
+        // DFS
         parents.put(verticeInicio, -1);
-        while(!S.empty()){
+        while (!S.empty()) {
             int v = S.pop();
             if (!visited.contains(v)) {
                 visited.add(v);
@@ -104,20 +104,20 @@ public class Grafo {
                 }
             }
         }
-       
+
         return parents;
     }
 
     /**
      * Retorna os sucessores do vértice
      * 
-     * @param vertice 
+     * @param vertice
      * @return Sucessores
      */
-    public Set<Integer> obtainSuccessors(int vertice){
+    public Set<Integer> obtainSuccessors(int vertice) {
         Set<Integer> sucessores = new HashSet<Integer>();
-        for(int i = 0; i < mat.length; i++){
-            if(mat[vertice][i] > 0){
+        for (int i = 0; i < mat.length; i++) {
+            if (mat[vertice][i] > 0) {
                 sucessores.add(i);
             }
         }
@@ -125,12 +125,52 @@ public class Grafo {
     }
 
     /**
-     * Método que irá solucionar o problema dos k-centros sem heurística
+     * Método que irá solucionar aproximadamente o problema dos k-centros sem
+     * heurística
      * 
      * @return Vetor com a posição ideal para os centros
      */
-    public int[] solucao() {
-        // TODO: Criar método sem heurística
+    public Set<Double> solucao() {
+        Set<Double> centros = new HashSet<Double>();
+        double[] somas = new double[mat.length];
+
+        for (int i = 0; i < mat.length; i++) {
+            int soma = 0;
+            for (int j = 0; j < mat[i].length; j++) {
+                soma += mat[i][j];
+            }
+            somas[i] = soma;
+        }
+
+        for (int i = 0; i < k; i++) {
+            int h = menorIndex(somas);
+            centros.add(somas[h]);
+            somas[h] = Double.POSITIVE_INFINITY;
+        }
+
+        return centros;
+    }
+
+    /**
+     * Método para encontrar o index do menor valor de um array
+     * 
+     * @param array
+     * @return int com o valor do index
+     */
+    private int menorIndex(double[] array) {
+        if (array.length == 0)
+            return -1;
+
+        int index = 0;
+        double min = array[index];
+
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] <= min) {
+                min = array[i];
+                index = i;
+            }
+        }
+        return index;
     }
 
     /**
@@ -138,7 +178,7 @@ public class Grafo {
      * 
      * @return Vetor com a posição ideal para os centros
      */
-    public int[] solucaoHeuristica() {
+    public Set<Double> solucaoHeuristica() {
         // TODO: Criar método com heurística
     }
 
