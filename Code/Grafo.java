@@ -28,6 +28,21 @@ public class Grafo {
     }
 
     /**
+     * Metodo para criar grafo para testes
+     */
+    public void grafoTeste(){
+        int grafo[][] = {{-1, 3, 2,-1,-1,-1},
+                         { 3,-1, 4, 2, 3,-1},
+                         { 2, 4,-1,-1,-1, 8},
+                         {-1, 2,-1,-1, 7,-1},
+                         {-1, 3,-1, 7,-1, 4},
+                         {-1,-1, 8,-1, 4,-1}
+                        };
+
+        mat = grafo;        
+    }
+
+    /**
      * Método para calcular o valor do raio e do diâmetro do Grafo
      * 
      * @param mat Matriz de adjacência do grafo
@@ -42,9 +57,9 @@ public class Grafo {
      * @param vertice Número do vértice para se encontrar a excentricidade
      * @return Retorna um int que representa a excentricidade do vértice
      */
-    public int calcularExcentricidade(int vertice) {
-        // TODO: Criar método para calcular excentricidade de um vértice específico
-    }
+    // public int calcularExcentricidade(int vertice) {
+    //     // TODO: Criar método para calcular excentricidade de um vértice específico
+    // }
 
     /**
      * Busca em Largura
@@ -68,8 +83,10 @@ public class Grafo {
             if (!visited.contains(v)) {
                 visited.add(v);
                 for (int vertice : obtainSuccessors(v)) {
-                    Q.add(vertice);
-                    parents.put(vertice, v);
+                    if (!visited.contains(vertice)) {
+                        Q.add(vertice);
+                        parents.put(vertice, v);
+                    }
                 }
             }
         }
@@ -99,8 +116,10 @@ public class Grafo {
             if (!visited.contains(v)) {
                 visited.add(v);
                 for (int vertice : obtainSuccessors(v)) {
-                    S.push(vertice);
-                    parents.put(vertice, v);
+                    if (!visited.contains(vertice)) {
+                        S.push(vertice);
+                        parents.put(vertice, v);
+                    }    
                 }
             }
         }
@@ -178,9 +197,9 @@ public class Grafo {
      * 
      * @return Vetor com a posição ideal para os centros
      */
-    public Set<Double> solucaoHeuristica() {
-        // TODO: Criar método com heurística
-    }
+    // public Set<Double> solucaoHeuristica() {
+    //     // TODO: Criar método com heurística
+    // }
 
     // Getters
     public int[][] getMat() {
