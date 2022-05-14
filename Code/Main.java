@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -12,16 +13,17 @@ public class Main {
 
         G.grafoTeste();
 
-        System.out.println("\nBusca em largura");
+        G.calcularExcentricidade(0);
+        // System.out.println("\nBusca em largura");
 
-        for (Map.Entry<Integer,Integer> vertice : G.buscaEmLargura(0).entrySet()) {
-            System.out.println("Vertex: " + vertice.getKey() + " Parent: " + vertice.getValue());
-        }
+        // for (Map.Entry<Integer,Integer> vertice : G.buscaEmLargura(0).entrySet()) {
+        //     System.out.println("Vertex: " + vertice.getKey() + " Parent: " + vertice.getValue());
+        // }
 
-        System.out.println("\nBusca em produndidade");
+        // System.out.println("\nBusca em produndidade");
 
-        for (Map.Entry<Integer,Integer> vertice : G.buscaEmProfundidade(0).entrySet()) {
-            System.out.println("Vertex: " + vertice.getKey() + " Parent: " + vertice.getValue());
-        }
+        // for (Map.Entry<Integer,Integer> vertice : G.buscaEmProfundidade(0).entrySet()) {
+        //     System.out.println("Vertex: " + vertice.getKey() + " Parent: " + vertice.getValue());
+        // }
     }
 }

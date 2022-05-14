@@ -33,10 +33,10 @@ public class Grafo {
     public void grafoTeste(){
         int grafo[][] = {{-1, 3, 2,-1,-1,-1},
                          { 3,-1, 4, 2, 3,-1},
-                         { 2, 4,-1,-1,-1, 8},
+                         { 2, 4,-1,-1,-1, 4},
                          {-1, 2,-1,-1, 7,-1},
-                         {-1, 3,-1, 7,-1, 4},
-                         {-1,-1, 8,-1, 4,-1}
+                         {-1, 3,-1, 7,-1,-1},
+                         {-1,-1, 4,-1,-1,-1}
                         };
 
         mat = grafo;        
@@ -57,9 +57,74 @@ public class Grafo {
      * @param vertice Número do vértice para se encontrar a excentricidade
      * @return Retorna um int que representa a excentricidade do vértice
      */
-    // public int calcularExcentricidade(int vertice) {
-    //     // TODO: Criar método para calcular excentricidade de um vértice específico
-    // }
+    public int calcularExcentricidade(int root) {
+        // TODO: Criar método para calcular excentricidade de um vértice específico
+        int dist[] = new int[mat.length]; // Distance from root array
+        int pred[] = new int[mat.length]; // Predecessor array
+        ArrayList<Integer> corte = new ArrayList<Integer>(); // Elementos visitados
+
+        // Inicializar distancias e predecessores
+        for (int v = 0; v < mat.length; v++) {
+            dist[v] = 65535;
+            pred[v] = -1;
+        }
+        dist[root] = 0;
+        corte.add(root);
+
+        for (int i = 1; i < mat.length; i++) {
+            int edge[] = menorAresta(obterArestaDeCorte(corte));
+            // edge[0] = v, edge[1] = w, edge[2] = custo
+            dist[edge[1]] = dist[edge[0]] + edge[2];
+            pred[edge[1]] = edge[0];
+            corte.add(edge[1]);
+        }
+
+        System.out.println("Root: " + root);
+        for (int i = 0; i < mat.length; i++) {
+            System.out.println("Vertex: " + i);
+            System.out.println("Parent: " + pred[i]);
+            System.out.println("Distance: " + dist[i]);
+            System.out.println("");
+        }
+
+        return 0;
+    }
+
+    /**
+     * Retorna as arestas de corte
+     * 
+     * @param corte
+     * @return Arestas de corte
+     */
+    public ArrayList<int[]> obterArestaDeCorte(ArrayList<Integer> corte) {
+        ArrayList<int[]> arestasCorte = new ArrayList<int[]>(); // array de [v1,v2,c]
+        
+        for (int vertice : corte) {
+            for (int aresta = 0; aresta < mat.length; aresta++) {
+                if (mat[vertice][aresta] > 0 && !corte.contains(aresta)) {
+                    int triplet[] = {vertice, aresta, mat[vertice][aresta]};
+                    arestasCorte.add(triplet);
+                }
+            }
+        }
+        
+        return arestasCorte;
+    }
+
+    /**
+     * Retorna a menor aresta de arestas recebidas
+     * @param arr
+     * @return
+     */
+    public int[] menorAresta(ArrayList<int[]> arr){
+        int result[] = arr.get(0);
+        for (int[] triplet : arr) {
+            if (result[2] > triplet[2]){
+                result = triplet;
+            }
+        }
+        return result;
+    }
 
     /**
      * Busca em Largura
@@ -80,13 +145,16 @@ public class Grafo {
         parents.put(verticeInicio, -1);
         while (!Q.isEmpty()) {
             int v = Q.remove();
-            if (!visited.contains(v)) {
-                visited.add(v);
-                for (int vertice : obtainSuccessors(v)) {
-                    if (!visited.contains(vertice)) {
-                        Q.add(vertice);
-                        parents.put(vertice, v);
-                    }
+
+            if (!visited.contains(verticeInicio)) {
+                visited.add(verticeInicio);   
+            }
+            
+            for (int vertice : obtainSuccessors(v)) {
+                if (!visited.contains(vertice)) {
+                    visited.add(vertice);
+                    Q.add(vertice);
+                    parents.put(vertice, v);
                 }
             }
         }
