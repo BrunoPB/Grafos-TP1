@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -24,22 +27,59 @@ public class Grafo {
      * @param nomeTxt Nome do .txt que será lido
      */
     private void carregarGrafo(String nomeTxt) {
-        // TODO: Criar método para ler .txt e gerar matriz adjacente
+        int auxVetI, auxVetII;
+        int vertice;
+        int aresta;
+        try {
+            String arq = leitor(nomeTxt);
+            Scanner s = new Scanner(arq);
+
+            vertice = s.nextInt();
+            aresta = s.nextInt();
+            this.k = s.nextInt();
+            this.mat = new int[vertice + 1][vertice + 1];
+
+            // Completa a matriz com -1 e com 0 caso seja o mesmo vertice
+            for (int c = 0; c < this.mat.length; c++) {
+                for (int z = 0; z < this.mat[c].length; z++) {
+                    if (c == z) {
+                        this.mat[c][z] = 0;
+                    } else {
+                        this.mat[c][z] = -1;
+                    }
+                }
+            }
+
+            while (s.hasNext()) {
+                auxVetI = s.nextInt();
+                auxVetII = s.nextInt();
+                int valorAresta = s.nextInt();
+                this.mat[auxVetII][auxVetI] = this.mat[auxVetI][auxVetII] = valorAresta;
+            }
+
+            s.close();
+        } catch (Exception e) {
+            System.out.println("ERROR");
+        }
     }
 
-    /**
-     * Metodo para criar grafo para testes
-     */
-    public void grafoTeste(){
-        int grafo[][] = {{-1, 3, 2,-1,-1,-1},
-                         { 3,-1, 4, 2, 3,-1},
-                         { 2, 4,-1,-1,-1, 8},
-                         {-1, 2,-1,-1, 7,-1},
-                         {-1, 3,-1, 7,-1, 4},
-                         {-1,-1, 8,-1, 4,-1}
-                        };
-
-        mat = grafo;        
+    private static String leitor(String nomeTxt) throws IOException {
+        BufferedReader buffRead = new BufferedReader(new FileReader(nomeTxt));
+        String linha = "";
+        String aux = "";
+        boolean quitWhile = false;
+        while (!quitWhile) {
+            if (aux != null) {
+                linha += aux + "\n";
+            } else {
+                quitWhile = true;
+            }
+            if (!quitWhile) {
+                aux = buffRead.readLine();
+            }
+        }
+        buffRead.close();
+        return linha;
     }
 
     /**
@@ -58,7 +98,7 @@ public class Grafo {
      * @return Retorna um int que representa a excentricidade do vértice
      */
     // public int calcularExcentricidade(int vertice) {
-    //     // TODO: Criar método para calcular excentricidade de um vértice específico
+    // // TODO: Criar método para calcular excentricidade de um vértice específico
     // }
 
     /**
@@ -73,25 +113,30 @@ public class Grafo {
         Q.add(verticeInicio);
         // Dicionario de pais
         Map<Integer, Integer> parents = new HashMap<Integer, Integer>();
+        // Dicionario de niveis
+        Map<Integer, Integer> levels = new HashMap<Integer, Integer>();
         // Elementos visitados
         Set<Integer> visited = new HashSet<Integer>();
 
         // BFS
         parents.put(verticeInicio, -1);
+        levels.put(verticeInicio, 0);
         while (!Q.isEmpty()) {
             int v = Q.remove();
-            if (!visited.contains(v)) {
-                visited.add(v);
-                for (int vertice : obtainSuccessors(v)) {
-                    if (!visited.contains(vertice)) {
-                        Q.add(vertice);
-                        parents.put(vertice, v);
-                    }
+            if (!visited.contains(verticeInicio)) {
+                visited.add(verticeInicio);
+            }
+            Set<Integer> suc = obtainSuccessors(v);
+            for (int vertice : suc) {
+                if (!visited.contains(vertice)) {
+                    visited.add(vertice);
+                    Q.add(vertice);
+                    parents.put(vertice, v);
+                    levels.put(vertice, levels.get(v) + 1);
                 }
             }
         }
-
-        return parents;
+        return levels;
     }
 
     /**
@@ -119,7 +164,7 @@ public class Grafo {
                     if (!visited.contains(vertice)) {
                         S.push(vertice);
                         parents.put(vertice, v);
-                    }    
+                    }
                 }
             }
         }
@@ -149,10 +194,12 @@ public class Grafo {
      * 
      * @return Vetor com a posição ideal para os centros
      */
-    public Set<Double> solucao() {
-        Set<Double> centros = new HashSet<Double>();
+    public int solucao() {
+        Set<Integer> centros = new HashSet<Integer>();
         double[] somas = new double[mat.length];
+        int solucao = 0;
 
+        // Soma o valor das arestas de cada vértice e armazena as somas em somas
         for (int i = 0; i < mat.length; i++) {
             int soma = 0;
             for (int j = 0; j < mat[i].length; j++) {
@@ -161,13 +208,19 @@ public class Grafo {
             somas[i] = soma;
         }
 
+        // Pega os k-centros (k vértices com a menor soma) e amazena em centros
         for (int i = 0; i < k; i++) {
             int h = menorIndex(somas);
-            centros.add(somas[h]);
+            centros.add(h);
             somas[h] = Double.POSITIVE_INFINITY;
         }
 
-        return centros;
+        // Calcula qual o maior raio em relação aos centros
+        for (int i = 0; i < mat.length; i++) {
+            // TODO: Calcular solução usando o Dijkstra do Diogo
+        }
+
+        return solucao;
     }
 
     /**
@@ -197,8 +250,8 @@ public class Grafo {
      * 
      * @return Vetor com a posição ideal para os centros
      */
-    // public Set<Double> solucaoHeuristica() {
-    //     // TODO: Criar método com heurística
+    // public int solucaoHeuristica() {
+    // TODO: Criar método com heurística
     // }
 
     // Getters
@@ -216,6 +269,34 @@ public class Grafo {
 
     public int getK() {
         return this.k;
+    }
+
+    // MÉTODOS DE TESTE TODO: Apagar depois
+    /**
+     * Metodo para criar grafo para testes
+     */
+    public void grafoTeste() {
+        int grafo[][] = { { -1, 3, 2, -1, -1, -1 },
+                { 3, -1, 4, 2, 3, -1 },
+                { 2, 4, -1, -1, -1, 8 },
+                { -1, 2, -1, -1, 7, -1 },
+                { -1, 3, -1, 7, -1, 4 },
+                { -1, -1, 8, -1, 4, -1 }
+        };
+
+        mat = grafo;
+    }
+
+    /**
+     * Método para mostrar o estado atual da matriz
+     */
+    public void printarMatriz() {
+        for (int c = 0; c < this.mat.length; c++) {
+            for (int z = 0; z < this.mat[c].length; z++) {
+                System.out.print(String.format("%d\t", mat[c][z]));
+            }
+            System.out.println();
+        }
     }
 
 }
