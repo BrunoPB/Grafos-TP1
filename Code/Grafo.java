@@ -9,14 +9,11 @@ import java.util.*;
 public class Grafo {
     // Propriedades
     private int[][] mat; // Matriz de Adjacência do Grafo
-    private int raio; // Raio do Grafo
-    private int diametro; // Diâmetro do Grafo
     private int k; // Número de Centros do Grafo
 
     // Construtores
     public Grafo(String nomeTxt) {
         carregarGrafo(nomeTxt);
-        calcularRaioEDiametro(this.mat);
     }
 
     // Métodos
@@ -36,7 +33,7 @@ public class Grafo {
             vertice = s.nextInt();
             s.nextInt();
             this.k = s.nextInt();
-            this.mat = new int[vertice + 1][vertice + 1];
+            this.mat = new int[vertice][vertice];
 
             // Completa a matriz com -1 e com 0 caso seja o mesmo vertice
             for (int c = 0; c < this.mat.length; c++) {
@@ -49,6 +46,7 @@ public class Grafo {
                 }
             }
 
+            // Preenche a matriz com os devidos valores
             while (s.hasNext()) {
                 auxVetI = s.nextInt();
                 auxVetII = s.nextInt();
@@ -56,14 +54,23 @@ public class Grafo {
                 this.mat[auxVetII][auxVetI] = this.mat[auxVetI][auxVetII] = valorAresta;
             }
 
-            completarComDijkstra();
+            for (int i = 0; i < this.mat.length; i++) {
+                completarComDijkstra(i);
+            }
 
             s.close();
         } catch (Exception e) {
-            System.out.println("ERROR");
+            System.err.println(e.getMessage());
         }
     }
 
+    /**
+     * Método para ler .txt
+     * 
+     * @param nomeTxt Nome do arquivo .txt
+     * @return Retorna uma string com tudo que está escrito no arquivo
+     * @throws IOException
+     */
     private static String leitor(String nomeTxt) throws IOException {
         BufferedReader buffRead = new BufferedReader(new FileReader(nomeTxt));
         String linha = "";
@@ -83,17 +90,35 @@ public class Grafo {
         return linha;
     }
 
-    private static void completarComDijkstra() {
-
-    }
-
     /**
-     * Método para calcular o valor do raio e do diâmetro do Grafo
-     * 
-     * @param mat Matriz de adjacência do grafo
+     * Método que completa o grafo com valores faltantes
      */
-    private void calcularRaioEDiametro(int[][] mat) {
-        // TODO: Criar método para calcular o raio
+    private void completarComDijkstra(int root) {
+        int dist[] = new int[mat.length]; // Distance from root array
+        int pred[] = new int[mat.length]; // Predecessor array
+        ArrayList<Integer> corte = new ArrayList<Integer>(); // Elementos visitados
+
+        // Inicializar distancias e predecessores
+        for (int v = 0; v < mat.length; v++) {
+            dist[v] = 65535;
+            pred[v] = -1;
+        }
+        dist[root] = 0;
+        corte.add(root);
+
+        for (int i = 1; i < mat.length; i++) {
+            int edge[] = menorAresta(obterArestaDeCorte(corte));
+            // edge[0] = v, edge[1] = w, edge[2] = custo
+
+            dist[edge[1]] = dist[edge[0]] + edge[2];
+            pred[edge[1]] = edge[0];
+            corte.add(edge[1]);
+
+            // Atribuindo valor a matriz do Grafo
+            if (mat[root][edge[1]] > dist[edge[1]] || mat[root][edge[1]] == -1) {
+                mat[root][edge[1]] = mat[edge[1]][root] = dist[edge[1]];
+            }
+        }
     }
 
     /**
@@ -102,9 +127,66 @@ public class Grafo {
      * @param vertice Número do vértice para se encontrar a excentricidade
      * @return Retorna um int que representa a excentricidade do vértice
      */
-    // public int calcularExcentricidade(int vertice) {
-    // // TODO: Criar método para calcular excentricidade de um vértice específico
-    // }
+    public int calcularExcentricidade(int root) {
+        int dist[] = new int[mat.length]; // Distance from root array
+        int pred[] = new int[mat.length]; // Predecessor array
+        ArrayList<Integer> corte = new ArrayList<Integer>(); // Elementos visitados
+
+        // Inicializar distancias e predecessores
+        for (int v = 0; v < mat.length; v++) {
+            dist[v] = 65535;
+            pred[v] = -1;
+        }
+        dist[root] = 0;
+        corte.add(root);
+
+        for (int i = 1; i < mat.length; i++) {
+            int edge[] = menorAresta(obterArestaDeCorte(corte));
+            // edge[0] = v, edge[1] = w, edge[2] = custo
+            dist[edge[1]] = dist[edge[0]] + edge[2];
+            pred[edge[1]] = edge[0];
+            corte.add(edge[1]);
+        }
+
+        return 0;
+    }
+
+    /**
+     * Retorna as arestas de corte
+     * 
+     * @param corte
+     * @return Arestas de corte
+     */
+    public ArrayList<int[]> obterArestaDeCorte(ArrayList<Integer> corte) {
+        ArrayList<int[]> arestasCorte = new ArrayList<int[]>(); // array de [v1,v2,c]
+
+        for (int vertice : corte) {
+            for (int verticeFora = 0; verticeFora < mat.length; verticeFora++) {
+                if (mat[vertice][verticeFora] > 0 && !corte.contains(verticeFora)) {
+                    int triplet[] = { vertice, verticeFora, mat[vertice][verticeFora] };
+                    arestasCorte.add(triplet);
+                }
+            }
+        }
+
+        return arestasCorte;
+    }
+
+    /**
+     * Retorna a menor aresta de arestas recebidas
+     * 
+     * @param arr
+     * @return
+     */
+    public int[] menorAresta(ArrayList<int[]> arr) {
+        int result[] = arr.get(0);
+        for (int[] triplet : arr) {
+            if (result[2] > triplet[2]) {
+                result = triplet;
+            }
+        }
+        return result;
+    }
 
     /**
      * Busca em Largura
@@ -194,12 +276,12 @@ public class Grafo {
     }
 
     /**
-     * Método que irá solucionar aproximadamente o problema dos k-centros sem
+     * Método que irá solucionar aproximadamente o problema dos k-centros com
      * heurística
      * 
      * @return Vetor com a posição ideal para os centros
      */
-    public int solucao() {
+    public int solucaoHeuristica() throws Exception {
         Set<Integer> centros = new HashSet<Integer>();
         double[] somas = new double[mat.length];
         int solucao = 0;
@@ -222,7 +304,10 @@ public class Grafo {
 
         // Calcula qual o maior raio em relação aos centros
         for (int i = 0; i < mat.length; i++) {
-            // TODO: Calcular solução usando o Dijkstra do Diogo
+            int dist = distanciaAteCentro(i, centros);
+            if (dist > solucao) {
+                solucao = dist;
+            }
         }
 
         return solucao;
@@ -251,12 +336,55 @@ public class Grafo {
     }
 
     /**
-     * Método que irá solucionar o problema dos k-centros utilizando uma heurística
+     * Método que calcula a distancia de um vértice até o centro mais próximo dele
      * 
-     * @return Vetor com a posição ideal para os centros
+     * @param vertice Vértice inicial
+     * @param centros Conjunto de centros do grafo
+     * @return int correspondente a distancia de um vértice ao centro mais próximo
      */
-    // public int solucaoHeuristica() {
-    // TODO: Criar método com heurística
+    private int distanciaAteCentro(int vertice, Set<Integer> centros) throws Exception {
+        if (centros.contains(vertice)) {
+            return 0;
+        }
+
+        int dist[] = new int[mat.length]; // Distance from root array
+        int pred[] = new int[mat.length]; // Predecessor array
+        ArrayList<Integer> corte = new ArrayList<Integer>(); // Elementos visitados
+
+        // Inicializar distancias e predecessores
+        for (int v = 0; v < mat.length; v++) {
+            dist[v] = 65535;
+            pred[v] = -1;
+        }
+        dist[vertice] = 0;
+        corte.add(vertice);
+
+        for (int i = 0; i < mat.length; i++) {
+            int edge[] = menorAresta(obterArestaDeCorte(corte));
+            // edge[0] = v, edge[1] = w, edge[2] = custo
+
+            if (centros.contains(edge[1])) {
+                System.out.println("VERTICE PROXIMO: " + edge[0]);
+                System.out.println("CENTRO: " + edge[1]);
+                System.out.println();
+                return dist[edge[0]] + edge[2];
+            }
+
+            dist[edge[1]] = dist[edge[0]] + edge[2];
+            pred[edge[1]] = edge[0];
+            corte.add(edge[1]);
+        }
+
+        throw new Exception("Centros não encontrados");
+    }
+
+    /**
+     * Método que irá solucionar o problema dos k-centros usando força bruta
+     * 
+     * @return Inteiro com o valor do maior raio em relação aos centros
+     */
+    // public int solucaoBruta() {
+    // TODO: Criar método bruto
     // }
 
     // Getters
@@ -264,33 +392,11 @@ public class Grafo {
         return this.mat;
     }
 
-    public int getRaio() {
-        return this.raio;
-    }
-
-    public int getDiametro() {
-        return this.diametro;
-    }
-
     public int getK() {
         return this.k;
     }
 
     // MÉTODOS DE TESTE TODO: Apagar depois
-    /**
-     * Metodo para criar grafo para testes
-     */
-    public void grafoTeste() {
-        int grafo[][] = { { -1, 3, 2, -1, -1, -1 },
-                { 3, -1, 4, 2, 3, -1 },
-                { 2, 4, -1, -1, -1, 8 },
-                { -1, 2, -1, -1, 7, -1 },
-                { -1, 3, -1, 7, -1, 4 },
-                { -1, -1, 8, -1, 4, -1 }
-        };
-
-        mat = grafo;
-    }
 
     /**
      * Método para mostrar o estado atual da matriz

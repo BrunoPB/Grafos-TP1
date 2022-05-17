@@ -60,5 +60,10 @@ public class Main {
     public static void debug() {
         Grafo G = new Grafo("GrafoTeste.txt");
         G.printarMatriz();
+        // try {
+        // System.out.println(G.solucao());
+        // } catch (Exception e) {
+        // System.err.println("Error");
+        // }
     }
 }
