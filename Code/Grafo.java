@@ -29,13 +29,12 @@ public class Grafo {
     private void carregarGrafo(String nomeTxt) {
         int auxVetI, auxVetII;
         int vertice;
-        int aresta;
         try {
             String arq = leitor(nomeTxt);
             Scanner s = new Scanner(arq);
 
             vertice = s.nextInt();
-            aresta = s.nextInt();
+            s.nextInt();
             this.k = s.nextInt();
             this.mat = new int[vertice + 1][vertice + 1];
 
