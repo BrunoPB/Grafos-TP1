@@ -57,6 +57,8 @@ public class Grafo {
                 this.mat[auxVetII][auxVetI] = this.mat[auxVetI][auxVetII] = valorAresta;
             }
 
+            completarComDijkstra();
+
             s.close();
         } catch (Exception e) {
             System.out.println("ERROR");
@@ -80,6 +82,10 @@ public class Grafo {
         }
         buffRead.close();
         return linha;
+    }
+
+    private static void completarComDijkstra() {
+
     }
 
     /**
