@@ -303,12 +303,8 @@ public class Grafo {
         }
 
         // Calcula qual o maior raio em relação aos centros
-        for (int i = 0; i < mat.length; i++) {
-            int dist = distanciaAteCentro(i, centros);
-            if (dist > solucao) {
-                solucao = dist;
-            }
-        }
+        // TODO: Melhorar solução
+        solucao = calcularSolucao(centros);
 
         return solucao;
     }
@@ -376,6 +372,24 @@ public class Grafo {
         }
 
         throw new Exception("Centros não encontrados");
+    }
+
+    /**
+     * Método para calcular qual o maior raio em relação aos centros
+     * 
+     * @param centros Centros do vértices
+     * @return Retorna um inteiro com a solução
+     * @throws Exception
+     */
+    private int calcularSolucao(Set<Integer> centros) throws Exception {
+        int solucao = 0;
+        for (int i = 0; i < mat.length; i++) {
+            int dist = distanciaAteCentro(i, centros);
+            if (dist > solucao) {
+                solucao = dist;
+            }
+        }
+        return solucao;
     }
 
     /**
