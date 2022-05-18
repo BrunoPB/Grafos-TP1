@@ -57,7 +57,7 @@ public class Grafo {
      * @param vertice raiz
      * @return array com a menores distancias
      */
-    public void Djikstra(int root) {
+    public int[] Djikstra(int root) {
         int dist[] = new int[mat.length]; // Distance from root array
         int pred[] = new int[mat.length]; // Predecessor array
         ArrayList<Integer> corte = new ArrayList<Integer>(); // Elementos visitados
@@ -77,6 +77,8 @@ public class Grafo {
             pred[edge[1]] = edge[0];
             corte.add(edge[1]);
         }
+
+        return dist;
     }
 
     /**
