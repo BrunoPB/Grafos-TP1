@@ -52,13 +52,12 @@ public class Grafo {
     }
 
     /**
-     * Método para calcular a excentricidade de um vértice específico
+     * Djikstra 
      * 
-     * @param vertice Número do vértice para se encontrar a excentricidade
-     * @return Retorna um int que representa a excentricidade do vértice
+     * @param vertice raiz
+     * @return array com a menores distancias
      */
-    public int calcularExcentricidade(int root) {
-        // TODO: Criar método para calcular excentricidade de um vértice específico
+    public void Djikstra(int root) {
         int dist[] = new int[mat.length]; // Distance from root array
         int pred[] = new int[mat.length]; // Predecessor array
         ArrayList<Integer> corte = new ArrayList<Integer>(); // Elementos visitados
@@ -72,22 +71,12 @@ public class Grafo {
         corte.add(root);
 
         for (int i = 1; i < mat.length; i++) {
-            int edge[] = menorAresta(obterArestaDeCorte(corte));
+            int edge[] = menorAresta(obterArestaDeCorte(corte), dist);
             // edge[0] = v, edge[1] = w, edge[2] = custo
             dist[edge[1]] = dist[edge[0]] + edge[2];
             pred[edge[1]] = edge[0];
             corte.add(edge[1]);
         }
-
-        System.out.println("Root: " + root);
-        for (int i = 0; i < mat.length; i++) {
-            System.out.println("Vertex: " + i);
-            System.out.println("Parent: " + pred[i]);
-            System.out.println("Distance: " + dist[i]);
-            System.out.println("");
-        }
-
-        return 0;
     }
 
     /**
@@ -116,10 +105,10 @@ public class Grafo {
      * @param arr
      * @return
      */
-    public int[] menorAresta(ArrayList<int[]> arr){
+    public int[] menorAresta(ArrayList<int[]> arr, int[] dist){
         int result[] = arr.get(0);
         for (int[] triplet : arr) {
-            if (result[2] > triplet[2]){
+            if ((result[2] + dist[result[0]]) > (triplet[2] + dist[triplet[0]])){
                 result = triplet;
             }
         }
