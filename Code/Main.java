@@ -15,9 +15,11 @@ public class Main {
         while (!quit) {
             System.out
                     .print(String
-                            .format("Menu:\n1. Ler arquivo de grafo especifico\n2. Ler todos os arquivos\n0. Sair\n"));
+                            .format("Menu:\n1. Ler arquivo de grafo especifico\n2. Ler todos os arquivos\n3. Debug\n0. Sair\n"));
             int r1 = in.nextInt();
-            if (r1 != 1 && r1 != 2) {
+            if (r1 == 3) {
+                debug();
+            } else if (r1 != 1 && r1 != 2) {
                 quit = true;
             } else {
                 System.out.print(
@@ -42,14 +44,28 @@ public class Main {
         System.out.println("Digite o nome do arquivo que contem o grafo (inclua '.txt')");
         String txt = in.nextLine();
         Grafo G = new Grafo("./" + txt);
-        // TODO: Calcular soluções e retornar proximidade
+        System.out.println("Digite o valor da solução exata se houver ('0' caso não exista): ");
+        int realSolution = in.nextInt();
+
+        in.close();
     }
 
     public static void runAll(int heuristica) {
-        for (int i = 1; i < 41; i++) {
+        int nArquivos = 40;
+        for (int i = 1; i < nArquivos + 1; i++) {
             String txt = "./Dados/pmed" + i + ".txt";
             Grafo G = new Grafo(txt);
             // Calcular soluções
         }
+    }
+
+    public static void debug() {
+        Grafo G = new Grafo("GrafoTeste.txt");
+        G.printarMatriz();
+        // try {
+        // System.out.println(G.solucao());
+        // } catch (Exception e) {
+        // System.err.println("Error");
+        // }
     }
 }
