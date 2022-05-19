@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -9,8 +7,9 @@ import java.util.Scanner;
  * Classe Main
  */
 public class Main {
+    public static Scanner in = new Scanner(System.in);
+
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
         boolean quit = false;
         while (!quit) {
             System.out
@@ -23,7 +22,7 @@ public class Main {
                 quit = true;
             } else {
                 System.out.print(
-                        String.format("1. Usar metodo sem heuristica\n2. Usar metodo com heuristica\n0. Sair\n"));
+                        String.format("1. Usar metodo exato\n2. Usar metodo aproximado\n0. Sair\n"));
                 int r2 = in.nextInt();
                 if (r1 != 1 && r1 != 2) {
                     quit = true;
@@ -36,18 +35,34 @@ public class Main {
                 }
             }
         }
-        in.close();
     }
 
-    public static void runOne(int heuristica) {
-        Scanner in = new Scanner(System.in);
+    public static void runOne(int aprox) {
         System.out.println("Digite o nome do arquivo que contem o grafo (inclua '.txt')");
+        in.nextLine();
         String txt = in.nextLine();
         Grafo G = new Grafo("./" + txt);
-        System.out.println("Digite o valor da solução exata se houver ('0' caso não exista): ");
-        int realSolution = in.nextInt();
 
-        in.close();
+        int result;
+        try {
+            if (aprox == 2) {
+                System.out.println("Digite o valor da solucao exata se houver ('-1' caso nao exista): ");
+                int realSolution = in.nextInt();
+                result = G.solucaoHeuristica();
+                System.out.println("Solucao aproximada: " + result);
+                if (realSolution > -1) {
+                    double percentage = ((result * 100) / realSolution) - 100;
+                    System.out.println(
+                            "Porcentagem de erro em relacao a solucao de " + realSolution + ": " + percentage + "%");
+                }
+            } else {
+                result = G.solucaoBruta();
+                System.out.println("Solucao exata: " + result);
+            }
+
+        } catch (Exception e) {
+            System.err.println("ERROR: " + e.getMessage());
+        }
     }
 
     public static void runAll(int heuristica) {
@@ -61,11 +76,10 @@ public class Main {
 
     public static void debug() {
         Grafo G = new Grafo("GrafoTeste.txt");
-        G.printarMatriz();
-        // try {
-        // System.out.println(G.solucao());
-        // } catch (Exception e) {
-        // System.err.println("Error");
-        // }
+        try {
+            System.out.println(G.solucaoBruta());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -60,23 +60,8 @@ public class Grafo {
 
             s.close();
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            System.err.println("ERROR: " + e.getMessage());
         }
-    }
-
-    /**
-     * Metodo para criar grafo para testes
-     */
-    public void grafoTeste(){
-        int grafo[][] = {{-1, 3, 2,-1,-1,-1},
-                         { 3,-1, 4, 2, 3,-1},
-                         { 2, 4,-1,-1,-1, 4},
-                         {-1, 2,-1,-1, 7,-1},
-                         {-1, 3,-1, 7,-1,-1},
-                         {-1,-1, 4,-1,-1,-1}
-                        };
-
-        mat = grafo;        
     }
 
     /**
@@ -138,7 +123,7 @@ public class Grafo {
     }
 
     /**
-     * Djikstra 
+     * Djikstra
      * 
      * @param vertice raiz
      * @return array com a menores distancias
@@ -175,27 +160,28 @@ public class Grafo {
      */
     public ArrayList<int[]> obterArestaDeCorte(ArrayList<Integer> corte) {
         ArrayList<int[]> arestasCorte = new ArrayList<int[]>(); // array de [v1,v2,c]
-        
+
         for (int vertice : corte) {
             for (int aresta = 0; aresta < mat.length; aresta++) {
                 if (mat[vertice][aresta] > 0 && !corte.contains(aresta)) {
-                    int triplet[] = {vertice, aresta, mat[vertice][aresta]};
+                    int triplet[] = { vertice, aresta, mat[vertice][aresta] };
                     arestasCorte.add(triplet);
                 }
             }
-        }        
+        }
         return arestasCorte;
     }
 
     /**
      * Retorna a menor aresta de arestas recebidas
+     * 
      * @param arr
      * @return
      */
-    public int[] menorAresta(ArrayList<int[]> arr, int[] dist){
+    public int[] menorAresta(ArrayList<int[]> arr, int[] dist) {
         int result[] = arr.get(0);
         for (int[] triplet : arr) {
-            if ((result[2] + dist[result[0]]) > (triplet[2] + dist[triplet[0]])){
+            if ((result[2] + dist[result[0]]) > (triplet[2] + dist[triplet[0]])) {
                 result = triplet;
             }
         }
@@ -317,7 +303,6 @@ public class Grafo {
         }
 
         // Calcula qual o maior raio em relação aos centros
-        // TODO: Melhorar solução
         solucao = calcularSolucao(centros);
 
         return solucao;
@@ -374,9 +359,6 @@ public class Grafo {
             // edge[0] = v, edge[1] = w, edge[2] = custo
 
             if (centros.contains(edge[1])) {
-                System.out.println("VERTICE PROXIMO: " + edge[0]);
-                System.out.println("CENTRO: " + edge[1]);
-                System.out.println();
                 return dist[edge[0]] + edge[2];
             }
 
@@ -411,9 +393,40 @@ public class Grafo {
      * 
      * @return Inteiro com o valor do maior raio em relação aos centros
      */
-    // public int solucaoBruta() {
-    // TODO: Criar método bruto
-    // }
+    public int solucaoBruta() throws Exception {
+        int solucao = Integer.MAX_VALUE;
+        Set<Integer> centros = new HashSet<Integer>();
+        int rep = (int) Math.pow(2, this.k);
+        for (int i = 0; i < rep; i++) {
+            centros = combinacaoBruta(rep, i);
+            if (centros.size() > 0) {
+                int s = calcularSolucao(centros);
+                if (s < solucao) {
+                    solucao = s;
+                }
+            }
+        }
+        return solucao;
+    }
+
+    private Set<Integer> combinacaoBruta(int rep, int i) {
+        String code = Integer.toBinaryString(rep + i).substring(1);
+        Set<Integer> combination = new HashSet<Integer>();
+        String b = "";
+        int counter = 0;
+        for (int j = 0; j < code.length(); j++) {
+            if (code.charAt(j) == '1') {
+                b += j;
+                counter++;
+            }
+        }
+        if (counter == this.k) {
+            for (int j = 0; j < b.length(); j++) {
+                combination.add(Integer.parseInt("" + b.charAt(j)));
+            }
+        }
+        return combination;
+    }
 
     // Getters
     public int[][] getMat() {
