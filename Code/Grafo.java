@@ -51,7 +51,7 @@ public class Grafo {
                 auxVetI = s.nextInt();
                 auxVetII = s.nextInt();
                 int valorAresta = s.nextInt();
-                this.mat[auxVetII][auxVetI] = this.mat[auxVetI][auxVetII] = valorAresta;
+                this.mat[auxVetII - 1][auxVetI - 1] = this.mat[auxVetI - 1][auxVetII - 1] = valorAresta;
             }
 
             for (int i = 0; i < this.mat.length; i++) {
@@ -396,7 +396,7 @@ public class Grafo {
     public int solucaoBruta() throws Exception {
         int solucao = Integer.MAX_VALUE;
         Set<Integer> centros = new HashSet<Integer>();
-        int rep = (int) Math.pow(2, this.k);
+        int rep = (int) Math.pow(2, this.mat.length);
         for (int i = 0; i < rep; i++) {
             centros = combinacaoBruta(rep, i);
             if (centros.size() > 0) {
@@ -409,6 +409,13 @@ public class Grafo {
         return solucao;
     }
 
+    /**
+     * Método para calcular cada combinação diferente possível
+     * 
+     * @param rep Numero de combinações diferentes
+     * @param i   Variavel de iteração entre combinações
+     * @return Uma possível combinação
+     */
     private Set<Integer> combinacaoBruta(int rep, int i) {
         String code = Integer.toBinaryString(rep + i).substring(1);
         Set<Integer> combination = new HashSet<Integer>();
@@ -436,19 +443,4 @@ public class Grafo {
     public int getK() {
         return this.k;
     }
-
-    // MÉTODOS DE TESTE TODO: Apagar depois
-
-    /**
-     * Método para mostrar o estado atual da matriz
-     */
-    public void printarMatriz() {
-        for (int c = 0; c < this.mat.length; c++) {
-            for (int z = 0; z < this.mat[c].length; z++) {
-                System.out.print(String.format("%d\t", mat[c][z]));
-            }
-            System.out.println();
-        }
-    }
-
 }
