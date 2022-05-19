@@ -93,6 +93,8 @@ public class Grafo {
 
     /**
      * Método que completa o grafo com valores faltantes
+     * 
+     * @param root Vertice que será completado
      */
     private void completarComDijkstra(int root) {
         int dist[] = new int[mat.length]; // Distance from root array
@@ -120,36 +122,6 @@ public class Grafo {
                 mat[root][edge[1]] = mat[edge[1]][root] = dist[edge[1]];
             }
         }
-    }
-
-    /**
-     * Djikstra
-     * 
-     * @param vertice raiz
-     * @return array com a menores distancias
-     */
-    public int[] Djikstra(int root) {
-        int dist[] = new int[mat.length]; // Distance from root array
-        int pred[] = new int[mat.length]; // Predecessor array
-        ArrayList<Integer> corte = new ArrayList<Integer>(); // Elementos visitados
-
-        // Inicializar distancias e predecessores
-        for (int v = 0; v < mat.length; v++) {
-            dist[v] = 65535;
-            pred[v] = -1;
-        }
-        dist[root] = 0;
-        corte.add(root);
-
-        for (int i = 1; i < mat.length; i++) {
-            int edge[] = menorAresta(obterArestaDeCorte(corte), dist);
-            // edge[0] = v, edge[1] = w, edge[2] = custo
-            dist[edge[1]] = dist[edge[0]] + edge[2];
-            pred[edge[1]] = edge[0];
-            corte.add(edge[1]);
-        }
-
-        return dist;
     }
 
     /**
@@ -186,93 +158,6 @@ public class Grafo {
             }
         }
         return result;
-    }
-
-    /**
-     * Busca em Largura
-     * 
-     * @param verticeInicio Vértice onde irá iniciar a busca em largura
-     * @return Caminho da busca em Largura
-     */
-    public Map<Integer, Integer> buscaEmLargura(int verticeInicio) {
-        // Fila de vertices
-        Queue<Integer> Q = new LinkedList<Integer>();
-        Q.add(verticeInicio);
-        // Dicionario de pais
-        Map<Integer, Integer> parents = new HashMap<Integer, Integer>();
-        // Dicionario de niveis
-        Map<Integer, Integer> levels = new HashMap<Integer, Integer>();
-        // Elementos visitados
-        Set<Integer> visited = new HashSet<Integer>();
-
-        // BFS
-        parents.put(verticeInicio, -1);
-        levels.put(verticeInicio, 0);
-        while (!Q.isEmpty()) {
-            int v = Q.remove();
-            if (!visited.contains(verticeInicio)) {
-                visited.add(verticeInicio);
-            }
-            Set<Integer> suc = obtainSuccessors(v);
-            for (int vertice : suc) {
-                if (!visited.contains(vertice)) {
-                    visited.add(vertice);
-                    Q.add(vertice);
-                    parents.put(vertice, v);
-                    levels.put(vertice, levels.get(v) + 1);
-                }
-            }
-        }
-        return levels;
-    }
-
-    /**
-     * Busca em Profundidade
-     * 
-     * @param verticeInicio Vértice onde irá iniciar a busca em Profundidade
-     * @return Caminho da busca em Profundidade
-     */
-    public Map<Integer, Integer> buscaEmProfundidade(int verticeInicio) {
-        // Pilha de vertices
-        Stack<Integer> S = new Stack<Integer>();
-        S.push(verticeInicio);
-        // Dicionario de pais
-        Map<Integer, Integer> parents = new HashMap<Integer, Integer>();
-        // Elementos visitados
-        Set<Integer> visited = new HashSet<Integer>();
-
-        // DFS
-        parents.put(verticeInicio, -1);
-        while (!S.empty()) {
-            int v = S.pop();
-            if (!visited.contains(v)) {
-                visited.add(v);
-                for (int vertice : obtainSuccessors(v)) {
-                    if (!visited.contains(vertice)) {
-                        S.push(vertice);
-                        parents.put(vertice, v);
-                    }
-                }
-            }
-        }
-
-        return parents;
-    }
-
-    /**
-     * Retorna os sucessores do vértice
-     * 
-     * @param vertice
-     * @return Sucessores
-     */
-    public Set<Integer> obtainSuccessors(int vertice) {
-        Set<Integer> sucessores = new HashSet<Integer>();
-        for (int i = 0; i < mat.length; i++) {
-            if (mat[vertice][i] > 0) {
-                sucessores.add(i);
-            }
-        }
-        return sucessores;
     }
 
     /**
