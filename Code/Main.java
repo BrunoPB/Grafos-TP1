@@ -28,7 +28,11 @@ public class Main {
                         System.out.print(
                                 String.format("1. Usar metodo exato\n2. Usar metodo aproximado\n0. Sair\n"));
                         int r2 = in.nextInt();
-                        runOne(r2);
+                        if (r2 != 1 && r2 != 2) {
+                            quit = true;
+                        } else {
+                            runOne(r2);
+                        }
                     } else {
                         runAll();
                     }
@@ -81,7 +85,10 @@ public class Main {
                 double time = System.currentTimeMillis();
                 result = G.solucaoHeuristica();
                 time = System.currentTimeMillis() - time;
-                System.out.println("pmed" + i + ".txt: " + result + " | Tempo: " + time + "ms");
+                int[] realSolutions = { 127, 98, 93, 74, 48, 84, 64, 55, 37, 20, 59, 51, 35, 26, 18, 47, 39, 28, 18, 13,
+                        40, 38, 22, 15, 11, 38, 32, 18, 13, 9, 30, 29, 15, 11, 30, 27, 15, 29, 23, 13 };
+                double erro = ((result * 100) / realSolutions[i - 1]) - 100;
+                System.out.println("pmed" + i + ".txt: " + result + " | Tempo: " + time + "ms | Erro: " + erro + "%");
             } catch (Exception e) {
                 System.err.println("ERROR: " + e.getMessage());
             }
