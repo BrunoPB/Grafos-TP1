@@ -65,7 +65,6 @@ public class Grafo {
     }
 
     /**
-     * Método para calcular o valor do raio e do diâmetro do Grafo
      * Método para ler .txt
      * 
      * @param nomeTxt Nome do arquivo .txt
